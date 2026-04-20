@@ -219,7 +219,7 @@ bool Monster::isEnemyFaction(Faction_t faction) const {
 }
 
 bool Monster::isPushable() {
-	return m_monsterType->info.pushable && baseSpeed != 0;
+	return m_monsterType->info.pushable;
 }
 
 bool Monster::isAttackable() const {
@@ -240,6 +240,18 @@ bool Monster::isRewardBoss() const {
 
 bool Monster::isHostile() const {
 	return m_monsterType->info.isHostile;
+}
+
+bool Monster::canTarget() const {
+	return m_monsterType->info.canTarget;
+}
+
+bool Monster::canWalk() const {
+	return m_monsterType->info.canWalk;
+}
+
+bool Monster::canRandomWalk() const {
+	return m_monsterType->info.canRandomWalk;
 }
 
 bool Monster::isFamiliar() const {
@@ -680,6 +692,10 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 		return false;
 	}
 
+	if (!canTarget() && !isSummon()) {
+		return false;
+	}
+
 	const auto &master = getMaster();
 	const auto &masterPlayer = master ? master->getPlayer() : nullptr;
 	if (isSummon() && masterPlayer) {
@@ -729,6 +745,11 @@ void Monster::onCreatureLeave(const std::shared_ptr<Creature> &creature) {
 }
 
 bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAULT*/) {
+	if (!canTarget() && !isSummon()) {
+		setFollowCreature(nullptr);
+		return false;
+	}
+
 	if (searchType == TARGETSEARCH_DEFAULT) {
 		int32_t rnd = uniform_random(1, 100);
 
@@ -964,12 +985,21 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
+	if (!canTarget() && !isSummon()) {
+		setFollowCreature(nullptr);
+		return false;
+	}
+
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
 			checkCreatureAttack();
 		}
+		return setFollowCreature(creature);
 	}
-	return setFollowCreature(creature);
+
+	setAttackedCreature(nullptr);
+	setFollowCreature(nullptr);
+	return false;
 }
 
 void Monster::setIdle(bool idle) {
@@ -1544,12 +1574,26 @@ void Monster::pushCreatures(const std::shared_ptr<Tile> &tile) {
 
 bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 	if (isIdle || getHealth() <= 0) {
-		// we dont have anyone watching might aswell stop walking
 		eventWalk = 0;
 		return false;
 	}
 
 	bool result = false;
+
+	// walkTo() via script continua permitido
+	if (!listWalkDir.empty()) {
+		result = Creature::getNextStep(nextDirection, flags);
+		if (result) {
+			flags |= FLAG_PATHFINDING;
+		}
+		return result;
+	}
+
+	// bloqueia só a IA autônoma
+	if (!canRandomWalk()) {
+		eventWalk = 0;
+		return false;
+	}
 
 	if (getFollowCreature() && hasFollowPath) {
 		doFollowCreature(flags, nextDirection, result);

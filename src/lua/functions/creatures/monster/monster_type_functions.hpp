@@ -28,6 +28,7 @@ private:
 	static int luaMonsterTypeIsIllusionable(lua_State* L);
 	static int luaMonsterTypeIsHostile(lua_State* L);
 	static int luaMonsterTypeIsPushable(lua_State* L);
+	static int luaMonsterTypeCanRandomWalk(lua_State* L);
 	static int luaMonsterTypeIsHealthHidden(lua_State* L);
 	static int luaMonsterTypeIsBlockable(lua_State* L);
 	static int luaMonsterTypeIsForgeCreature(lua_State* L);

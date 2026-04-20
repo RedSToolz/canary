@@ -31,6 +31,7 @@ void MonsterTypeFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "MonsterType", "isIllusionable", MonsterTypeFunctions::luaMonsterTypeIsIllusionable);
 	Lua::registerMethod(L, "MonsterType", "isHostile", MonsterTypeFunctions::luaMonsterTypeIsHostile);
 	Lua::registerMethod(L, "MonsterType", "isPushable", MonsterTypeFunctions::luaMonsterTypeIsPushable);
+	Lua::registerMethod(L, "MonsterType", "canRandomWalk", MonsterTypeFunctions::luaMonsterTypeCanRandomWalk);
 	Lua::registerMethod(L, "MonsterType", "isHealthHidden", MonsterTypeFunctions::luaMonsterTypeIsHealthHidden);
 	Lua::registerMethod(L, "MonsterType", "isBlockable", MonsterTypeFunctions::luaMonsterTypeIsBlockable);
 	Lua::registerMethod(L, "MonsterType", "isForgeCreature", MonsterTypeFunctions::luaMonsterTypeIsForgeCreature);
@@ -349,6 +350,22 @@ int MonsterTypeFunctions::luaMonsterTypeIsPushable(lua_State* L) {
 			Lua::pushBoolean(L, monsterType->info.pushable);
 		} else {
 			monsterType->info.pushable = Lua::getBoolean(L, 2);
+			Lua::pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterTypeFunctions::luaMonsterTypeCanRandomWalk(lua_State* L) {
+	// get: monsterType:canRandomWalk() set: monsterType:canRandomWalk(bool)
+	const auto &monsterType = Lua::getUserdataShared<MonsterType>(L, 1, "MonsterType");
+	if (monsterType) {
+		if (lua_gettop(L) == 1) {
+			Lua::pushBoolean(L, monsterType->info.canRandomWalk);
+		} else {
+			monsterType->info.canRandomWalk = Lua::getBoolean(L, 2, true);
 			Lua::pushBoolean(L, true);
 		}
 	} else {

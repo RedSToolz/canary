@@ -75,6 +75,9 @@ public:
 	bool canPushCreatures() const;
 	bool isRewardBoss() const;
 	bool isHostile() const;
+	bool canTarget() const;
+	bool canWalk() const;
+	bool canRandomWalk() const;
 	bool isFamiliar() const;
 	bool canSeeInvisibility() const override;
 	uint32_t getManaCost() const;

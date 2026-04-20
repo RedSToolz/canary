@@ -80,6 +80,7 @@ void CreatureFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Creature", "hasBeenSummoned", CreatureFunctions::luaCreatureHasBeenSummoned);
 	Lua::registerMethod(L, "Creature", "getDescription", CreatureFunctions::luaCreatureGetDescription);
 	Lua::registerMethod(L, "Creature", "getPathTo", CreatureFunctions::luaCreatureGetPathTo);
+	Lua::registerMethod(L, "Creature", "walkTo", CreatureFunctions::luaCreatureWalkTo);
 	Lua::registerMethod(L, "Creature", "move", CreatureFunctions::luaCreatureMove);
 	Lua::registerMethod(L, "Creature", "getZoneType", CreatureFunctions::luaCreatureGetZoneType);
 	Lua::registerMethod(L, "Creature", "getZones", CreatureFunctions::luaCreatureGetZones);
@@ -1037,6 +1038,35 @@ int CreatureFunctions::luaCreatureGetPathTo(lua_State* L) {
 	} else {
 		Lua::pushBoolean(L, false);
 	}
+	return 1;
+}
+
+int CreatureFunctions::luaCreatureWalkTo(lua_State* L) {
+	// creature:walkTo(pos[, minTargetDist = 0[, maxTargetDist = 1[, fullPathSearch = true[, clearSight = true[, maxSearchDist = 0[, ignoreConditions = false]]]]]])
+	const auto &creature = Lua::getUserdataShared<Creature>(L, 1, "Creature");
+	if (!creature) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const Position &position = Lua::getPosition(L, 2);
+
+	FindPathParams fpp;
+	fpp.minTargetDist = Lua::getNumber<int32_t>(L, 3, 0);
+	fpp.maxTargetDist = Lua::getNumber<int32_t>(L, 4, 1);
+	fpp.fullPathSearch = Lua::getBoolean(L, 5, fpp.fullPathSearch);
+	fpp.clearSight = Lua::getBoolean(L, 6, fpp.clearSight);
+	fpp.maxSearchDist = Lua::getNumber<int32_t>(L, 7, fpp.maxSearchDist);
+	const bool ignoreConditions = Lua::getBoolean(L, 8, false);
+
+	std::vector<Direction> dirList;
+	if (!creature->getPathTo(position, dirList, fpp) || dirList.empty()) {
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	creature->startAutoWalk(dirList, ignoreConditions);
+	Lua::pushBoolean(L, true);
 	return 1;
 }
 

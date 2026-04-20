@@ -193,6 +193,9 @@ registerMonsterType.flags = function(mtype, mask)
 		if mask.flags.pushable ~= nil then
 			mtype:isPushable(mask.flags.pushable)
 		end
+		if mask.flags.canRandomWalk ~= nil then
+		mtype:canRandomWalk(mask.flags.canRandomWalk)
+		end
 		if mask.flags.canPushItems ~= nil then
 			mtype:canPushItems(mask.flags.canPushItems)
 		end

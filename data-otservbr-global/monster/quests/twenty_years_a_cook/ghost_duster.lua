@@ -32,6 +32,7 @@ monster.strategiesTarget = {
 monster.flags = {
 	canWalk = false,
 	canTarget = false,
+	canRandomWalk = false,
 	summonable = false,
 	attackable = true,
 	hostile = false,
@@ -46,9 +47,9 @@ monster.flags = {
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
-	canWalkOnEnergy = false,
-	canWalkOnFire = false,
-	canWalkOnPoison = false,
+	canWalkOnEnergy = true,
+	canWalkOnFire = true,
+	canWalkOnPoison = true,
 }
 
 monster.light = {
@@ -57,16 +58,10 @@ monster.light = {
 }
 
 monster.summon = {}
-
 monster.voices = {}
-
 monster.loot = {}
-
 monster.attacks = {}
-
-monster.defenses = {
-	{ name = "combat", type = COMBAT_HEALING, chance = 100, interval = 2000, minDamage = 100000000, maxDamage = 100000000, effect = CONST_ME_NONE },
-}
+monster.defenses = {}
 
 monster.elements = {
 	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
@@ -88,6 +83,8 @@ monster.immunities = {
 	{ type = "bleed", condition = true },
 }
 
-mType.onThink = function(monster, interval) end
+mType.onThink = function(monster, interval)
+	return
+end
 
 mType:register(monster)

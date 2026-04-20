@@ -2,6 +2,7 @@ TwentyYearsACookQuest = {
 	TheRestOfRatha = {
 		MissionZone = Zone("mission.the-rest-of-ratha"),
 		BossZone = Zone("boss.the-rest-of-ratha"),
+		BossSpawnPosition = Position(33382, 31440, 15),
 		PositionsToTeleport = {
 			Position(33382, 31440, 15),
 			Position(33382, 31440, 15),
@@ -16,6 +17,7 @@ TwentyYearsACookQuest = {
 			GhostItem = 44598,
 			Harp = 44599,
 			HarpCooldown = 44600,
+			BoxFlask = 9168,
 		},
 		LeverUID = 62133,
 		FlaskBoxUID = 62134,
@@ -65,6 +67,6 @@ TwentyYearsACookQuest = {
 }
 
 -- Initializing zones
-TwentyYearsACookQuest.TheRestOfRatha.MissionZone:addArea({ x = 33380, y = 31438, z = 15 }, { x = 33386, y = 31444, z = 15 })
-TwentyYearsACookQuest.TheRestOfRatha.BossZone:addArea({ x = 33380, y = 31438, z = 15 }, { x = 33386, y = 31444, z = 15 })
+TwentyYearsACookQuest.TheRestOfRatha.MissionZone:addArea({ x = 33376, y = 31436, z = 15 }, { x = 33398, y = 31454, z = 15 })
+TwentyYearsACookQuest.TheRestOfRatha.BossZone:addArea({ x = 33376, y = 31436, z = 15 }, { x = 33398, y = 31454, z = 15 })
 TwentyYearsACookQuest.Fryclops.BossZone:addArea({ x = 32340, y = 31587, z = 6 }, { x = 32368, y = 31611, z = 6 })
